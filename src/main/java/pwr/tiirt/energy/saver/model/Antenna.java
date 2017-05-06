@@ -16,6 +16,7 @@ public class Antenna {
     private double x;
     private double y;
     private double r;
+    private boolean isActive;
 
     public double getSmallestX() {
         return getX() - getR();

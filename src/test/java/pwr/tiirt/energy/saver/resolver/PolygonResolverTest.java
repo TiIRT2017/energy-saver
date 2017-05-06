@@ -22,8 +22,8 @@ public class PolygonResolverTest {
 
     @Before
     public void setUp() throws Exception {
-        first = new Antenna(3, 3, 2);
-        second = new Antenna(5, 5, 2);
+        first = new Antenna(3, 3, 2, true);
+        second = new Antenna(5, 5, 2, true);
         polygonResolver = new PolygonResolver(Arrays.asList(first, second));
     }
 

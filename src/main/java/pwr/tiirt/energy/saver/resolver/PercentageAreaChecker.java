@@ -6,6 +6,7 @@ import pwr.tiirt.energy.saver.model.Point;
 import pwr.tiirt.energy.saver.model.Rectangle;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by kasia on 04.05.2017.
@@ -19,10 +20,10 @@ import java.util.List;
 public class PercentageAreaChecker {
 
     private Rectangle rectangle;
-    private List<Antenna> antennas;
+    private List<Antenna> allAntennas;
 
     public double calculateCoverage() {
-
+        List<Antenna> antennas = allAntennas.stream().filter(Antenna::isActive).collect(Collectors.toList());
         PolygonResolver polygonResolver = new PolygonResolver(antennas);
         List<Double> xCoordinates = polygonResolver.getXCoordinates();
         List<Double> yCoordinates = polygonResolver.getYCoordinates();

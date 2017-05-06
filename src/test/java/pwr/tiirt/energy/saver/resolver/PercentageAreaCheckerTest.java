@@ -18,7 +18,7 @@ public class PercentageAreaCheckerTest {
     @Test
     public void shouldCalculateCoverageSingleAntennaInside() {
         // given
-        Antenna antenna = new Antenna(4, 5, 2);
+        Antenna antenna = new Antenna(4, 5, 2, true);
         ArrayList<Antenna> antennas = Lists.newArrayList(antenna);
         ArrayList<Double> x = Lists.newArrayList(1.0, 14.0, 14.0, 1.0);
         ArrayList<Double> y = Lists.newArrayList(7.0, 7.0, 1.0, 1.0);
@@ -32,8 +32,8 @@ public class PercentageAreaCheckerTest {
     @Test
     public void shouldCalculateCoverageOverlappingAntennas() {
         // given
-        Antenna antenna1 = new Antenna(4, 5, 2);
-        Antenna antenna2 = new Antenna(6, 5, 2);
+        Antenna antenna1 = new Antenna(4, 5, 2, true);
+        Antenna antenna2 = new Antenna(6, 5, 2, true);
         ArrayList<Antenna> antennas = Lists.newArrayList(antenna1, antenna2);
         ArrayList<Double> x = Lists.newArrayList(1.0, 14.0, 14.0, 1.0);
         ArrayList<Double> y = Lists.newArrayList(7.0, 7.0, 1.0, 1.0);
@@ -48,7 +48,7 @@ public class PercentageAreaCheckerTest {
     @Test
     public void shouldCalculateCoverageBigCircle() {
         // given
-        Antenna antenna = new Antenna(4, 4, 3);
+        Antenna antenna = new Antenna(4, 4, 3, true);
         ArrayList<Antenna> antennas = Lists.newArrayList(antenna);
         ArrayList<Double> x = Lists.newArrayList(3.0, 5.0, 5.0, 3.0);
         ArrayList<Double> y = Lists.newArrayList(5.0, 5.0, 2.0, 2.0);
@@ -62,8 +62,8 @@ public class PercentageAreaCheckerTest {
     @Test
     public void shouldCalculateCoverageHalfCirclesTouching() {
         // given
-        Antenna antenna1 = new Antenna(102, 109, 7);
-        Antenna antenna2 = new Antenna(116, 109, 7);
+        Antenna antenna1 = new Antenna(102, 109, 7, true);
+        Antenna antenna2 = new Antenna(116, 109, 7, true);
         ArrayList<Antenna> antennas = Lists.newArrayList(antenna1, antenna2);
         ArrayList<Double> x = Lists.newArrayList(102.0, 116.0, 116.0, 102.0);
         ArrayList<Double> y = Lists.newArrayList(116.0, 116.0, 102.0, 102.0);
