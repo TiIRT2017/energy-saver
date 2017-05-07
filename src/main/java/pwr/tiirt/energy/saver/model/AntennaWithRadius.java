@@ -25,4 +25,12 @@ public class AntennaWithRadius {
     public int getBiggestX() {
         return getX() + getR();
     }
+
+    public int getSmallestY() {
+        return getY() - getR();
+    }
+
+    public int getBiggestY() {
+        return getY() + getR();
+    }
 }
