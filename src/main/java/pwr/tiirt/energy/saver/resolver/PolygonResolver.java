@@ -67,7 +67,7 @@ public class PolygonResolver {
     }
 
     private void getLowerPartOfThePolygon(final List<Point> result, final double minX, final double maxX) {
-        for (double nextX = maxX; nextX >= minX; nextX--) {
+        for (double nextX = maxX; nextX >= minX; nextX-=0.001) {
             double minY = Integer.MAX_VALUE;
             for (final AntennaWithRadius antenna : antennas) {
                 minY = getMinY(nextX, minY, antenna);
@@ -92,7 +92,7 @@ public class PolygonResolver {
     }
 
     private void getUpperPartOThePolygon(final List<Point> result, final double minX, final double maxX) {
-        for (double nextX = minX; nextX <= maxX; nextX ++) {
+        for (double nextX = minX; nextX <= maxX; nextX+=0.001) {
             double maxY = Integer.MIN_VALUE;
             for (final AntennaWithRadius antenna : antennas) {
                 maxY = getMaxY(nextX, maxY, antenna);

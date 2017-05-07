@@ -77,9 +77,9 @@ public class PercentageAreaCheckerTest {
     @Test
     public void shouldCalculateCoverageTwoCirclesNotOverlapping() {
         // given
-        Antenna antenna1 = new Antenna(4, 5, 0.005, true);
-        Antenna antenna2 = new Antenna(6, 5, 0.001, true);
-        ArrayList<Antenna> antennas = Lists.newArrayList(antenna1, antenna2);
+        AntennaWithRadius antenna1 = new AntennaWithRadius(4, 5, 0.005, true);
+        AntennaWithRadius antenna2 = new AntennaWithRadius(6, 5, 0.001, true);
+        ArrayList<AntennaWithRadius> antennas = Lists.newArrayList(antenna1, antenna2);
         ArrayList<Double> x = Lists.newArrayList(1.0, 14.0, 14.0, 1.0);
         ArrayList<Double> y = Lists.newArrayList(7.0, 7.0, 1.0, 1.0);
         PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
