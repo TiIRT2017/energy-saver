@@ -48,33 +48,36 @@ public class PolygonResolver {
     }
 
     private List<Point> getShapeAsListOfPoints() {
-        final double minX = getCircleWithSmallestX().getSmallestX();
-        final double maxX = getCircleWithBiggestX().getBiggestX();
+        final int minX = getCircleWithSmallestX().getSmallestX();
+        final int maxX = getCircleWithBiggestX().getBiggestX();
         final List<Point> result = new ArrayList<>();
         getUpperPartOThePolygon(result, minX, maxX);
         getLowerPartOfThePolygon(result, minX, maxX);
-        return result.stream().distinct().collect(Collectors.toList());
+        return result;
     }
 
     private AntennaWithRadius getCircleWithSmallestX() {
-        final Optional<AntennaWithRadius> circleWithSmallestX = antennas.stream().min(Comparator.comparingDouble(AntennaWithRadius::getSmallestX));
+        final Optional<AntennaWithRadius> circleWithSmallestX = antennas.stream().min(Comparator.comparingInt(AntennaWithRadius::getSmallestX));
         return circleWithSmallestX.orElse(null);
     }
 
     private AntennaWithRadius getCircleWithBiggestX() {
-        final Optional<AntennaWithRadius> circleWithBiggestX = antennas.stream().max(Comparator.comparingDouble(AntennaWithRadius::getBiggestX));
+        final Optional<AntennaWithRadius> circleWithBiggestX = antennas.stream().max(Comparator.comparingInt(AntennaWithRadius::getBiggestX));
         return circleWithBiggestX.orElse(null);
     }
 
     private void getLowerPartOfThePolygon(final List<Point> result, final double minX, final double maxX) {
-        for (double nextX = maxX; nextX >= minX; nextX-=0.001) {
+        for (double nextX = maxX; nextX >= minX; nextX -= 1) {
             double minY = Integer.MAX_VALUE;
-            for (final AntennaWithRadius antenna : antennas) {
+
+            for (int i = 0; i < antennas.size(); i++) {
+                AntennaWithRadius antenna = antennas.get(i);
                 minY = getMinY(nextX, minY, antenna);
-                if (minY == Integer.MAX_VALUE) {
-                    minY = lastMinY;
+                if (i == antennas.size() - 1 && minY == Integer.MAX_VALUE) {
+                    minY = lastMaxY;
                 }
             }
+
             final Point point = new Point(nextX, minY);
             lastMinY = minY;
             result.add(point);
@@ -84,19 +87,20 @@ public class PolygonResolver {
     private double getMinY(final double nextX, double minY, final AntennaWithRadius antenna) {
         try {
             final double smallerY = getSmallerYForXAndCircle(nextX, antenna);
-            minY = (smallerY <= minY ? smallerY: minY);
+            minY = (smallerY <= minY ? smallerY : minY);
         } catch (final Exception e) {
             e.printStackTrace();
         }
         return minY;
     }
 
-    private void getUpperPartOThePolygon(final List<Point> result, final double minX, final double maxX) {
-        for (double nextX = minX; nextX <= maxX; nextX+=0.001) {
+    private void getUpperPartOThePolygon(final List<Point> result, final int minX, final int maxX) {
+        for (int nextX = minX; nextX <= maxX; nextX += 1) {
             double maxY = Integer.MIN_VALUE;
-            for (final AntennaWithRadius antenna : antennas) {
+            for (int i = 0; i < antennas.size(); i++) {
+                AntennaWithRadius antenna = antennas.get(i);
                 maxY = getMaxY(nextX, maxY, antenna);
-                if (maxY == Integer.MIN_VALUE) {
+                if (i == antennas.size() - 1 && maxY == Integer.MIN_VALUE) {
                     maxY = lastMaxY;
                 }
             }

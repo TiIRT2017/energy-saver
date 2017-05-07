@@ -20,8 +20,8 @@ public class PercentageAreaCheckerTest {
         // given
         final AntennaWithRadius antenna = new AntennaWithRadius(4, 5, 2, true);
         final ArrayList<AntennaWithRadius> antennas = Lists.newArrayList(antenna);
-        final ArrayList<Double> x = Lists.newArrayList(1.0, 14.0, 14.0, 1.0);
-        final ArrayList<Double> y = Lists.newArrayList(7.0, 7.0, 1.0, 1.0);
+        final ArrayList<Integer> x = Lists.newArrayList(1, 14, 14, 1);
+        final ArrayList<Integer> y = Lists.newArrayList(7, 7, 1, 1);
         final PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
         // when
         final double area = percentageAreaChecker.calculateCoverage();
@@ -35,14 +35,14 @@ public class PercentageAreaCheckerTest {
         final AntennaWithRadius antenna1 = new AntennaWithRadius(4, 5, 2, true);
         final AntennaWithRadius antenna2 = new AntennaWithRadius(6, 5, 2, true);
         final ArrayList<AntennaWithRadius> antennas = Lists.newArrayList(antenna1, antenna2);
-        final ArrayList<Double> x = Lists.newArrayList(1.0, 14.0, 14.0, 1.0);
-        final ArrayList<Double> y = Lists.newArrayList(7.0, 7.0, 1.0, 1.0);
+        final ArrayList<Integer> x = Lists.newArrayList(1, 14, 14, 1);
+        final ArrayList<Integer> y = Lists.newArrayList(7, 7, 1, 1);
         final PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
         // when
         final double area = percentageAreaChecker.calculateCoverage();
         System.out.println(area);
         // then
-        assertThat(area).isCloseTo(0.27, Percentage.withPercentage(5));
+        assertThat(area).isCloseTo(0.24, Percentage.withPercentage(5));
     }
 
     @Test
@@ -50,8 +50,8 @@ public class PercentageAreaCheckerTest {
         // given
         final AntennaWithRadius antenna = new AntennaWithRadius(4, 4, 3, true);
         final ArrayList<AntennaWithRadius> antennas = Lists.newArrayList(antenna);
-        final ArrayList<Double> x = Lists.newArrayList(3.0, 5.0, 5.0, 3.0);
-        final ArrayList<Double> y = Lists.newArrayList(5.0, 5.0, 2.0, 2.0);
+        final ArrayList<Integer> x = Lists.newArrayList(3, 5, 5, 3);
+        final ArrayList<Integer> y = Lists.newArrayList(5, 5, 2, 2);
         final PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
         // when
         final double area = percentageAreaChecker.calculateCoverage();
@@ -65,28 +65,28 @@ public class PercentageAreaCheckerTest {
         final AntennaWithRadius antenna1 = new AntennaWithRadius(102, 109, 7, true);
         final AntennaWithRadius antenna2 = new AntennaWithRadius(116, 109, 7, true);
         final ArrayList<AntennaWithRadius> antennas = Lists.newArrayList(antenna1, antenna2);
-        final ArrayList<Double> x = Lists.newArrayList(102.0, 116.0, 116.0, 102.0);
-        final ArrayList<Double> y = Lists.newArrayList(116.0, 116.0, 102.0, 102.0);
+        final ArrayList<Integer> x = Lists.newArrayList(102, 116, 116, 102);
+        final ArrayList<Integer> y = Lists.newArrayList(116, 116, 102, 102);
         final PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
         // when
         final double area = percentageAreaChecker.calculateCoverage();
         // then
-        assertThat(area).isCloseTo(0.839, Percentage.withPercentage(5));
+        assertThat(area).isCloseTo(0.79, Percentage.withPercentage(5));
     }
 
     @Test
     public void shouldCalculateCoverageTwoCirclesNotOverlapping() {
         // given
-        AntennaWithRadius antenna1 = new AntennaWithRadius(4, 5, 0.005, true);
-        AntennaWithRadius antenna2 = new AntennaWithRadius(6, 5, 0.001, true);
+        AntennaWithRadius antenna1 = new AntennaWithRadius(3, 3, 1, true);
+        AntennaWithRadius antenna2 = new AntennaWithRadius(15, 3, 1, true);
         ArrayList<AntennaWithRadius> antennas = Lists.newArrayList(antenna1, antenna2);
-        ArrayList<Double> x = Lists.newArrayList(1.0, 14.0, 14.0, 1.0);
-        ArrayList<Double> y = Lists.newArrayList(7.0, 7.0, 1.0, 1.0);
+        ArrayList<Integer> x = Lists.newArrayList(1, 21, 21, 1);
+        ArrayList<Integer> y = Lists.newArrayList(5, 5, 1, 1);
         PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
         // when
         double area = percentageAreaChecker.calculateCoverage();
         // then
-        assertThat(area).isCloseTo(0.000154, Percentage.withPercentage(5));
+        assertThat(area).isCloseTo(0.05, Percentage.withPercentage(5));
     }
 
 }

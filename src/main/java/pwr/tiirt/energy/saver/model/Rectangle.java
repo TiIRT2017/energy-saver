@@ -16,15 +16,15 @@ import java.util.List;
 public class Rectangle {
 
     // zał: ordered jak trzeba
-    private List<Double> x;
-    private List<Double> y;
+    private List<Integer> x;
+    private List<Integer> y;
 
     private Point A;
     private Point B;
     private Point C;
     private Point D;
 
-    public Rectangle(List<Double> x, List<Double> y) {
+    public Rectangle(List<Integer> x, List<Integer> y) {
         this.x = x;
         this.y = y;
         this.A = new Point(x.get(0), y.get(0));

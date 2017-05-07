@@ -13,16 +13,16 @@ import lombok.*;
 @ToString
 public class AntennaWithRadius {
 
-    private double x;
-    private double y;
-    private double r;
+    private int x;
+    private int y;
+    private int r;
     private boolean isActive;
 
-    public double getSmallestX() {
+    public int getSmallestX() {
         return getX() - getR();
     }
 
-    public double getBiggestX() {
+    public int getBiggestX() {
         return getX() + getR();
     }
 }

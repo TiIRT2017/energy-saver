@@ -1,8 +1,6 @@
 package pwr.tiirt.energy.saver.resolver;
 
 import lombok.*;
-import pwr.tiirt.energy.saver.Antenna;
-import pwr.tiirt.energy.saver.Genotype;
 import pwr.tiirt.energy.saver.model.AntennaWithRadius;
 import pwr.tiirt.energy.saver.model.Point;
 import pwr.tiirt.energy.saver.model.Rectangle;
