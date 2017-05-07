@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class Antenna {
+public class AntennaWithRadius {
 
     private double x;
     private double y;

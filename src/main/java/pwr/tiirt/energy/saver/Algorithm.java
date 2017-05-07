@@ -1,16 +1,24 @@
 package pwr.tiirt.energy.saver;
 
+import pwr.tiirt.energy.saver.model.AntennaWithRadius;
+import pwr.tiirt.energy.saver.model.Rectangle;
+import pwr.tiirt.energy.saver.resolver.PercentageAreaChecker;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Algorithm {
 
+	private final static double COEFFICIENT = 1.1;
+
 	private final List<Antenna> antennas;
+	private final Rectangle rectangle;
 	private final List<Genotype> population;
 	private final int maxIterations;
 	private final int populationSize;
@@ -24,9 +32,10 @@ public class Algorithm {
 	private final List<Double> averages = new ArrayList<>();
 	private final List<Genotype> bestGenotypes = new ArrayList<>();
 
-	public Algorithm(final List<Antenna> antennas, final int populationSize, final int maxIterations, final double mutationProbability,
-			final double crossoverProbability, final double maxRange) {
+	public Algorithm(final List<Antenna> antennas, final Rectangle rectangle, final int populationSize, final int maxIterations, final double mutationProbability,
+	                 final double crossoverProbability, final double maxRange) {
 		this.antennas = Collections.unmodifiableList(antennas);
+		this.rectangle = rectangle;
 		this.populationSize = populationSize;
 		this.population = new ArrayList<>(populationSize);
 		this.maxIterations = maxIterations;
@@ -37,9 +46,10 @@ public class Algorithm {
 		initialize();
 	}
 
-	public Algorithm(final List<Antenna> antennas, final Genotype mask, final int populationSize, final int maxIterations, final double mutationProbability,
+	public Algorithm(final List<Antenna> antennas, final Genotype mask, final Rectangle rectangle, final int populationSize, final int maxIterations, final double mutationProbability,
 	                 final double crossoverProbability, final double maxRange) {
 		this.antennas = Collections.unmodifiableList(antennas);
+		this.rectangle = rectangle;
 		this.populationSize = populationSize;
 		this.population = new ArrayList<>(populationSize);
 		this.maxIterations = maxIterations;
@@ -56,29 +66,40 @@ public class Algorithm {
 			population.add(new Genotype(antennas.size(), maxRange));
 		}
 		evaluate();
+		saveResults();
 	}
 
 	private void initialize(final Genotype mask) {
-		mask.initializeMask(mask, antennas);
+		this.mask.initializeMask(mask, antennas);
 		for (int i = 0; i < populationSize; i++) {
-			population.add(new Genotype(mask));
+			population.add(new Genotype(this.mask));
 		}
 		evaluate();
+		saveResults();
 	}
 
 	private void evaluate() {
-		//TODO: population.parallelStream().forEach(g -> calculateFunction());
-		population.sort(scoreComparator());
-		saveResults();
+		population.parallelStream().forEach(g -> calculateFunction(g));
+	}
+
+	private void calculateFunction(final Genotype g) {
+		final List<AntennaWithRadius> antennas = this.antennas
+				.stream()
+				.map(a -> new AntennaWithRadius(a.x, a.y, g.ranges[this.antennas.indexOf(a)], a.active))
+				.collect(Collectors.toList());
+		final double area = new PercentageAreaChecker(rectangle, antennas).calculateCoverage();
+		g.coverage = area;
+		g.score = Arrays.stream(g.ranges).map(r -> Math.pow(r, 2)).sum() * COEFFICIENT / Math.min(Math.pow(area, 2), 1.0);
 	}
 
 	private Comparator<Genotype> scoreComparator() {return (g1, g2) -> (int) Math.signum(g1.score - g2.score);}
 
 	private void saveResults() {
+		population.sort(scoreComparator());
 		minimums.add(population.get(0).score);
-		maximums.add(population.get(population.size() - 1).score);
-		averages.add(population.stream().mapToDouble(g -> g.score).sum() / population.size());
-		bestGenotypes.add(population.get(0));
+		maximums.add(population.get(populationSize - 1).score);
+		averages.add(population.stream().mapToDouble(g -> g.score).sum() / populationSize);
+		bestGenotypes.add(new Genotype(population.get(0)));
 	}
 
 	public void solve() {
@@ -88,10 +109,12 @@ public class Algorithm {
 			cross();
 			evaluate();
 			select();
+			saveResults();
 		}
 	}
 
 	private boolean notFinished(final int iterations) {
+		System.out.println("Population: " + iterations + ", current size: " + population.size());
 		final double currentMin = minimums.get(minimums.size() - 1);
 		return currentMin > 0.0 && iterations < maxIterations && !population.isEmpty();
 	}
@@ -131,9 +154,13 @@ public class Algorithm {
 	private Genotype selectDifferent(final Genotype... genotypes) {
 		Genotype g;
 		do {
-			g = population.get(ThreadLocalRandom.current().nextInt(0, population.size()));
-		} while (Arrays.stream(genotypes).noneMatch(other -> g == other));
+			g = population.get(ThreadLocalRandom.current().nextInt(population.size()));
+		} while (notDifferent(g, genotypes));
 		return g;
+	}
+
+	private boolean notDifferent(final Genotype g, final Genotype... genotypes) {
+		return Arrays.stream(genotypes).anyMatch(other -> g == other);
 	}
 
 	private void createOffspring(final Genotype g, final List<Genotype> newPopulation, final Genotype other, final int noOfAntennas) {
