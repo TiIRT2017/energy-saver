@@ -6,21 +6,21 @@ import java.util.stream.Collectors;
 
 public class Genotype {
 
-	public final double[] ranges;
+	public final int[] ranges;
 	public double score = 0.0;
 	public double coverage = 0.0;
 
 	public Genotype(final int noOfAntennas) {
-		ranges = new double[noOfAntennas];
+		ranges = new int[noOfAntennas];
 	}
 
-	public Genotype(final int noOfAntennas, final double maxRange) {
-		ranges = new double[noOfAntennas];
+	public Genotype(final int noOfAntennas, final int maxRange) {
+		ranges = new int[noOfAntennas];
 		initialize(maxRange);
 	}
 
 	public Genotype(final Genotype other) {
-		this.ranges = new double[other.ranges.length];
+		this.ranges = new int[other.ranges.length];
 		for (int i = 0; i < this.ranges.length; i++) {
 			this.ranges[i] = other.ranges[i];
 		}
@@ -28,15 +28,15 @@ public class Genotype {
 		this.coverage = other.coverage;
 	}
 
-	private void initialize(final double maxRange) {
+	private void initialize(final int maxRange) {
 		for (int i = 0; i < ranges.length; i++) {
-			ranges[i] = ThreadLocalRandom.current().nextDouble(maxRange);
+			ranges[i] = ThreadLocalRandom.current().nextInt(maxRange);
 		}
 	}
 
 	public void initializeMask() {
 		for (int i = 0; i < ranges.length; i++) {
-			ranges[i] = -1.0;
+			ranges[i] = -1;
 		}
 	}
 
@@ -46,7 +46,7 @@ public class Genotype {
 		                                      .flatMap(a -> a.neighbours.stream())
 		                                      .mapToInt(a -> antennas.indexOf(a)).boxed().collect(Collectors.toList());
 		for (int i = 0; i < ranges.length; i++) {
-			ranges[i] = indices.contains(i) ? -1.0 : mask.ranges[i];
+			ranges[i] = indices.contains(i) ? -1 : mask.ranges[i];
 		}
 	}
 

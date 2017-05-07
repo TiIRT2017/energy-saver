@@ -17,6 +17,8 @@ public class Algorithm {
 
 	private final static double COEFFICIENT = 1.1;
 
+	public static final double EPSILON = 0.000000000001;
+
 	private final List<Antenna> antennas;
 	private final Rectangle rectangle;
 	private final List<Genotype> population;
@@ -24,7 +26,7 @@ public class Algorithm {
 	private final int populationSize;
 	private final double mutationProbability;
 	private final double crossoverProbability;
-	private final double maxRange;
+	private final int maxRange;
 	private final Genotype mask;
 
 	private final List<Double> minimums = new ArrayList<>();
@@ -33,7 +35,7 @@ public class Algorithm {
 	private final List<Genotype> bestGenotypes = new ArrayList<>();
 
 	public Algorithm(final List<Antenna> antennas, final Rectangle rectangle, final int populationSize, final int maxIterations, final double mutationProbability,
-	                 final double crossoverProbability, final double maxRange) {
+	                 final double crossoverProbability, final int maxRange) {
 		this.antennas = Collections.unmodifiableList(antennas);
 		this.rectangle = rectangle;
 		this.populationSize = populationSize;
@@ -47,7 +49,7 @@ public class Algorithm {
 	}
 
 	public Algorithm(final List<Antenna> antennas, final Genotype mask, final Rectangle rectangle, final int populationSize, final int maxIterations, final double mutationProbability,
-	                 final double crossoverProbability, final double maxRange) {
+	                 final double crossoverProbability, final int maxRange) {
 		this.antennas = Collections.unmodifiableList(antennas);
 		this.rectangle = rectangle;
 		this.populationSize = populationSize;
@@ -89,10 +91,11 @@ public class Algorithm {
 				.collect(Collectors.toList());
 		final double area = new PercentageAreaChecker(rectangle, antennas).calculateCoverage();
 		g.coverage = area;
-		g.score = antennas
-				          .stream()
+		g.score = Math.abs(area) < EPSILON ?
+				Double.POSITIVE_INFINITY
+				: antennas.stream()
 				          .filter(AntennaWithRadius::isActive)
-				          .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() * COEFFICIENT / Math.min(Math.pow(area, 2), 1.0);
+				          .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() * COEFFICIENT / Math.min(Math.pow(area, 4), 1.0);
 	}
 
 	private Comparator<Genotype> scoreComparator() {return (g1, g2) -> (int) Math.signum(g1.score - g2.score);}
@@ -129,7 +132,7 @@ public class Algorithm {
 	private void mutate(final Genotype g) {
 		for (int i = 0; i < g.ranges.length; i++)
 			if (mask.ranges[i] < 0.0 && ThreadLocalRandom.current().nextDouble() < mutationProbability)
-				g.ranges[i] = ThreadLocalRandom.current().nextDouble(maxRange);
+				g.ranges[i] = ThreadLocalRandom.current().nextInt(maxRange);
 	}
 
 
