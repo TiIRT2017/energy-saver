@@ -1,47 +1,88 @@
 {
-  "board": {
-    "a": {
-      "x": 1,
-      "y": 1
-    },
-    "b": {
-      "x": 6,
-      "y": 1
-    },
-    "c": {
-      "x": 1,
-      "y": 6
-    },
-    "d": {
-      "x": 6,
-      "y": 6
-    }
+  "boardDim": {
+    "x": 700,
+    "y": 500
   },
   "antennas": [
     {
-      "x": 1,
-      "y": 2,
-      "isActive": "True"
+      "x": 200,
+      "y": 400,
+      "active": "True"
     },
     {
-      "x": 2,
-      "y": 1,
-      "isActive": "True"
+      "x": 120,
+      "y": 350,
+      "active": "True"
     },
     {
-      "x": 2,
-      "y": 2,
-      "isActive": "False"
+      "x": 334,
+      "y": 473,
+      "active": "False"
     },
     {
-      "x": 3,
-      "y": 3,
-      "isActive": "True"
+      "x": 250,
+      "y": 340,
+      "active": "True"
     },
     {
-      "x": 4,
-      "y": 1,
-      "isActive": "False"
+      "x": 570,
+      "y": 320,
+      "active": "False"
+    },
+    {
+      "x": 12,
+      "y": 240,
+      "active": "False"
+    },
+    {
+      "x": 500,
+      "y": 476,
+      "active": "False"
+    },
+    {
+      "x": 624,
+      "y": 50,
+      "active": "False"
+    },
+    {
+      "x": 426,
+      "y": 458,
+      "active": "False"
+    },
+    {
+      "x": 475,
+      "y": 154,
+      "active": "False"
+    },
+    {
+      "x": 426,
+      "y": 347,
+      "active": "False"
+    },
+    {
+      "x": 278,
+      "y": 278,
+      "active": "False"
+    },
+    {
+      "x": 289,
+      "y": 427,
+      "active": "False"
+    },
+    {
+      "x": 98,
+      "y": 357,
+      "active": "False"
+    },
+    {
+      "x": 63,
+      "y": 178,
+      "active": "False"
+    },
+    {
+      "x": 147,
+      "y": 245,
+      "active": "False"
     }
   ]
 }

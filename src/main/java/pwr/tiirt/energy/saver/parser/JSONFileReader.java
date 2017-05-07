@@ -6,9 +6,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import pwr.tiirt.energy.saver.Antenna;
 import pwr.tiirt.energy.saver.model.AntennaOutOfBoundException;
-import pwr.tiirt.energy.saver.model.AntennaWithRadius;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,42 +20,56 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 @ToString
 public class JSONFileReader {
 
     private Gson instance;
     public static final String DEFAULT_TOPOLOGY_FILE_PATH = "D:\\workspace\\repos\\energy-saver\\src\\main\\resources\\sample_topology.json";
 
-    public List<AntennaWithRadius> getAntennaData(String topologyDataFilepath, int xRange, int yRange) throws IOException, AntennaOutOfBoundException {
+    public JSONFileReader() {
+        this.instance = new Gson();
+    }
+
+    public List<Antenna> getAntennaData(String topologyDataFilepath, Integer xRange, Integer yRange) throws IOException, AntennaOutOfBoundException {
         JsonObject topologyData = readDataFromJson(topologyDataFilepath);
         JsonArray antennaArray = topologyData.getAsJsonArray("antennas");
-        List<AntennaWithRadius> antennas = parseAntennaData(antennaArray);
-        if (validateAntennasCoord(antennas, xRange, yRange)){
+        List<Antenna> antennas = parseAntennaData(antennaArray);
+        if (validateAntennasCoord(antennas, xRange, yRange)) {
             return antennas;
-        }
-        else{
-            throw new AntennaOutOfBoundException();
+        } else {
+            throw new AntennaOutOfBoundException(antennas.toString());
         }
     }
 
-    private JsonObject readDataFromJson(String topologyDataFilepath) throws IOException {
+    public List<Integer> getBoardCoordinates(String boardCoordFilePath) throws IOException {
+        JsonObject boardJsonData = readDataFromJson(boardCoordFilePath).getAsJsonObject("boardDim");
+        JsonElement x = boardJsonData.get("x");
+        JsonElement y = boardJsonData.get("y");
+        return Lists.newArrayList(x.getAsInt(), y.getAsInt());
+    }
 
-        try (FileReader fr = new FileReader(topologyDataFilepath); JsonReader reader = new JsonReader(fr)) {
+    private JsonObject readDataFromJson(String dataFilepath) throws IOException {
+
+        try (FileReader fr = new FileReader(dataFilepath); JsonReader reader = new JsonReader(fr)) {
             return instance.fromJson(reader, JsonObject.class);
         }
     }
 
-    private List<AntennaWithRadius> parseAntennaData(JsonArray antennaArray) {
-        List<AntennaWithRadius> antennas = Lists.newArrayList();
+    private List<Antenna> parseAntennaData(JsonArray antennaArray) {
+        List<Antenna> antennas = Lists.newArrayList();
         for (JsonElement antenna : antennaArray) {
-            antennas.add(instance.fromJson(antenna, AntennaWithRadius.class));
+            antennas.add(instance.fromJson(antenna, Antenna.class));
         }
         return antennas;
     }
 
-    private boolean validateAntennasCoord(List<AntennaWithRadius> antennas, int xAxisRange, int yAxisRange) {
+    private boolean validateAntennasCoord(List<Antenna> antennas, int xAxisRange, int yAxisRange) {
         return antennas.stream().allMatch(new AntennaValidCoordPredicate(xAxisRange, yAxisRange));
     }
 
+    public static void main(String[] args) throws IOException, AntennaOutOfBoundException {
+        JSONFileReader reader = new JSONFileReader();
+        System.out.println(reader.getBoardCoordinates(DEFAULT_TOPOLOGY_FILE_PATH));
+        System.out.println(reader.getAntennaData(DEFAULT_TOPOLOGY_FILE_PATH, 900, 900));
+    }
 }

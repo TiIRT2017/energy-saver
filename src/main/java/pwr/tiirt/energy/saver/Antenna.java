@@ -1,8 +1,12 @@
 package pwr.tiirt.energy.saver;
 
+import lombok.*;
+
 import java.util.Collections;
 import java.util.List;
 
+@Getter
+@ToString
 public class Antenna {
 
 	public final int x;
