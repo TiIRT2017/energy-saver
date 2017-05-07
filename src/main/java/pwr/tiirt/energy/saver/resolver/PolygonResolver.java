@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 public class PolygonResolver {
 
     private List<Antenna> antennas;
+    private double lastMaxY = 0;
+    private double lastMinY = 0;
 
     public PolygonResolver(List<Antenna> antennas) {
         this.antennas = antennas;
@@ -67,12 +69,16 @@ public class PolygonResolver {
     }
 
     private void getLowerPartOfThePolygon(List<Point> result, double minX, double maxX) {
-        for (double nextX = maxX; nextX >= minX; nextX--) {
+        for (double nextX = maxX; nextX >= minX; nextX-=0.001) {
             double minY = Integer.MAX_VALUE;
             for (Antenna antenna : antennas) {
                 minY = getMinY(nextX, minY, antenna);
+                if (minY == Integer.MAX_VALUE) {
+                    minY = lastMinY;
+                }
             }
             Point point = new Point(nextX, minY);
+            lastMinY = minY;
             result.add(point);
         }
     }
@@ -88,12 +94,16 @@ public class PolygonResolver {
     }
 
     private void getUpperPartOThePolygon(List<Point> result, double minX, double maxX) {
-        for (double nextX = minX; nextX <= maxX; nextX ++) {
+        for (double nextX = minX; nextX <= maxX; nextX+=0.001) {
             double maxY = Integer.MIN_VALUE;
             for (Antenna antenna : antennas) {
                 maxY = getMaxY(nextX, maxY, antenna);
+                if (maxY == Integer.MIN_VALUE) {
+                    maxY = lastMaxY;
+                }
             }
             Point point = new Point(nextX, maxY);
+            lastMaxY = maxY;
             result.add(point);
         }
     }

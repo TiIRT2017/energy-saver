@@ -42,7 +42,7 @@ public class PercentageAreaCheckerTest {
         double area = percentageAreaChecker.calculateCoverage();
         System.out.println(area);
         // then
-        assertThat(area).isCloseTo(0.2356, Percentage.withPercentage(10));
+        assertThat(area).isCloseTo(0.27, Percentage.withPercentage(5));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class PercentageAreaCheckerTest {
         // when
         double area = percentageAreaChecker.calculateCoverage();
         // then
-        assertThat(area).isEqualTo(1);
+        assertThat(area).isCloseTo(1, Percentage.withPercentage(5));
     }
 
     @Test
@@ -71,7 +71,22 @@ public class PercentageAreaCheckerTest {
         // when
         double area = percentageAreaChecker.calculateCoverage();
         // then
-        assertThat(area).isCloseTo(0.785, Percentage.withPercentage(5));
+        assertThat(area).isCloseTo(0.839, Percentage.withPercentage(5));
+    }
+
+    @Test
+    public void shouldCalculateCoverageTwoCirclesNotOverlapping() {
+        // given
+        Antenna antenna1 = new Antenna(4, 5, 0.005, true);
+        Antenna antenna2 = new Antenna(6, 5, 0.001, true);
+        ArrayList<Antenna> antennas = Lists.newArrayList(antenna1, antenna2);
+        ArrayList<Double> x = Lists.newArrayList(1.0, 14.0, 14.0, 1.0);
+        ArrayList<Double> y = Lists.newArrayList(7.0, 7.0, 1.0, 1.0);
+        PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
+        // when
+        double area = percentageAreaChecker.calculateCoverage();
+        // then
+        assertThat(area).isCloseTo(0.000154, Percentage.withPercentage(5));
     }
 
 }
