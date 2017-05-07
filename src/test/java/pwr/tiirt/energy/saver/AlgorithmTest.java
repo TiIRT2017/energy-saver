@@ -28,6 +28,5 @@ public class AlgorithmTest {
 		final ArrayList<Antenna> antennas = Lists.newArrayList(antenna1, antenna2);
 		final Algorithm a = new Algorithm(antennas, rectangle, 1000, 100, 0.1, 0.2, 10);
 		a.solve();
-		a.toString();
 	}
 }

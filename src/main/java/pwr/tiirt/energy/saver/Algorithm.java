@@ -89,7 +89,10 @@ public class Algorithm {
 				.collect(Collectors.toList());
 		final double area = new PercentageAreaChecker(rectangle, antennas).calculateCoverage();
 		g.coverage = area;
-		g.score = Arrays.stream(g.ranges).map(r -> Math.pow(r, 2)).sum() * COEFFICIENT / Math.min(Math.pow(area, 2), 1.0);
+		g.score = antennas
+				          .stream()
+				          .filter(AntennaWithRadius::isActive)
+				          .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() * COEFFICIENT / Math.min(Math.pow(area, 2), 1.0);
 	}
 
 	private Comparator<Genotype> scoreComparator() {return (g1, g2) -> (int) Math.signum(g1.score - g2.score);}
