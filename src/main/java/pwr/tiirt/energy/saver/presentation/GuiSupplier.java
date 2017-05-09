@@ -28,12 +28,13 @@ public class GuiSupplier {
     private int translate;
     private int maxRange;
     private List<Antenna> antennas;
+    private double coverage;
 
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
         final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
         final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
         final List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1), coord.get(2));
-        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 1.5), coord.get(2), antennas);
+        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 1.5), coord.get(2), antennas, 0.0);
     }
 
     public Canvas getCanvasWithDim() {
@@ -50,7 +51,7 @@ public class GuiSupplier {
         gc.setLineWidth(1);
         for (final AntennaWithRadius a : antennas) {
             gc.strokeOval(translate - maxRange + a.getX() - a.getR(), translate - maxRange + a.getY() - a.getR(),
-                          a.getR() * 2, a.getR() * 2);
+                    a.getR() * 2, a.getR() * 2);
 
         }
     }
@@ -69,7 +70,8 @@ public class GuiSupplier {
         final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
         final List<AntennaWithRadius> antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
         System.out.println();
-        System.out.println("COVERAGE: " + getCoverage(rectangle, antennasWithRadius));
+        coverage = getCoverage(rectangle, antennasWithRadius);
+        System.out.println("COVERAGE: " + coverage);
         return antennasWithRadius;
     }
 

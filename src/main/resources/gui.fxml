@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<SplitPane dividerPositions="0.6722408026755853" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+           minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="pwr.tiirt.energy.saver.Controller">
+    <items>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <children>
+                <Canvas fx:id="canvas" height="330.0" layoutX="20.0" layoutY="55.0" width="362.0"/>
+            </children>
+        </AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="188.0">
+            <children>
+                <Button fx:id="importTopologyBtn" layoutX="36.0" layoutY="37.0" mnemonicParsing="false"
+                        onAction="#importTopology" text="Import topology..." />
+                <Label fx:id="coverageLabel" layoutX="14.0" layoutY="146.0" text="coverage %:" visible="false"/>
+                <Label fx:id="coverageHolder" layoutX="91.0" layoutY="142.0" prefHeight="25.0" prefWidth="97.0" visible="false"/>
+                <Button fx:id="solveTopologyBtn" layoutX="66.0" layoutY="110.0" mnemonicParsing="false"
+                        onAction="#solveTopology" text="Run" visible="false"/>
+                <Label layoutX="43.0" layoutY="77.0" prefHeight="17.0" prefWidth="107.0" text="Topology imported"
+                       visible="false" fx:id="topologyImportedLabel"/>
+            </children>
+        </AnchorPane>
+    </items>
+</SplitPane>
