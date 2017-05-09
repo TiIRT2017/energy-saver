@@ -29,40 +29,41 @@ public class JSONFileReader {
         this.instance = new Gson();
     }
 
-    public List<Antenna> getAntennaData(String topologyDataFilepath, Integer xRange, Integer yRange) throws IOException, AntennaOutOfBoundException {
-        JsonObject topologyData = readDataFromJson(topologyDataFilepath);
-        JsonArray antennaArray = topologyData.getAsJsonArray("antennas");
-        List<Antenna> antennas = parseAntennaData(antennaArray);
-        if (validateAntennasCoord(antennas, xRange, yRange)) {
+    public List<Antenna> getAntennaData(final String topologyDataFilepath, final Integer xRange, final Integer yRange, final Integer maxRange) throws IOException, AntennaOutOfBoundException {
+        final JsonObject topologyData = readDataFromJson(topologyDataFilepath);
+        final JsonArray antennaArray = topologyData.getAsJsonArray("antennas");
+        final List<Antenna> antennas = parseAntennaData(antennaArray);
+        if (validateAntennasCoord(antennas, xRange, yRange, maxRange)) {
             return antennas;
         } else {
             throw new AntennaOutOfBoundException(antennas.toString());
         }
     }
 
-    public List<Integer> getBoardCoordinates(String boardCoordFilePath) throws IOException {
-        JsonObject boardJsonData = readDataFromJson(boardCoordFilePath).getAsJsonObject("boardDim");
-        JsonElement x = boardJsonData.get("x");
-        JsonElement y = boardJsonData.get("y");
-        return Lists.newArrayList(x.getAsInt(), y.getAsInt());
+    public List<Integer> getBoardCoordinates(final String boardCoordFilePath) throws IOException {
+        final JsonObject boardJsonData = readDataFromJson(boardCoordFilePath).getAsJsonObject("boardData");
+        final JsonElement x = boardJsonData.get("x");
+        final JsonElement y = boardJsonData.get("y");
+        final JsonElement maxRange = boardJsonData.get("maxRange");
+        return Lists.newArrayList(x.getAsInt(), y.getAsInt(), maxRange.getAsInt());
     }
 
-    private JsonObject readDataFromJson(String dataFilepath) throws IOException {
+    private JsonObject readDataFromJson(final String dataFilepath) throws IOException {
 
         try (FileReader fr = new FileReader(dataFilepath); JsonReader reader = new JsonReader(fr)) {
             return instance.fromJson(reader, JsonObject.class);
         }
     }
 
-    private List<Antenna> parseAntennaData(JsonArray antennaArray) {
-        List<Antenna> antennas = Lists.newArrayList();
-        for (JsonElement antenna : antennaArray) {
+    private List<Antenna> parseAntennaData(final JsonArray antennaArray) {
+        final List<Antenna> antennas = Lists.newArrayList();
+        for (final JsonElement antenna : antennaArray) {
             antennas.add(instance.fromJson(antenna, Antenna.class));
         }
         return antennas;
     }
 
-    private boolean validateAntennasCoord(List<Antenna> antennas, int xAxisRange, int yAxisRange) {
-        return antennas.stream().allMatch(new AntennaValidCoordPredicate(xAxisRange, yAxisRange));
+    private boolean validateAntennasCoord(final List<Antenna> antennas, final int xAxisRange, final int yAxisRange, final Integer maxRange) {
+        return antennas.stream().allMatch(new AntennaValidCoordPredicate(xAxisRange, yAxisRange, maxRange));
     }
 }

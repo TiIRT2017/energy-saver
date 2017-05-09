@@ -11,9 +11,11 @@ import java.util.function.Predicate;
 public class AntennaValidCoordPredicate implements Predicate<Antenna> {
     private int xAxisRange;
     private int yAxisRange;
+    private int maxRange;
 
     @Override
-    public boolean test(Antenna antennaWithRadius) {
-        return antennaWithRadius.getX() >= 0 && antennaWithRadius.getX() <= xAxisRange && antennaWithRadius.getY() >= 0 && antennaWithRadius.getY() <= yAxisRange;
+    public boolean test(final Antenna antennaWithRadius) {
+        return antennaWithRadius.getX() >= maxRange && antennaWithRadius.getX() <= (maxRange + xAxisRange)
+               && antennaWithRadius.getY() >= maxRange && antennaWithRadius.getY() <= (maxRange + yAxisRange);
     }
 }

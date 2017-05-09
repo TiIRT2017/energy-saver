@@ -22,61 +22,65 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 public class GuiSupplier {
+
     private int boardWidth;
     private int boardHeight;
+    private int translate;
+    private int maxRange;
     private List<Antenna> antennas;
 
-
-    public static GuiSupplier create(String dataFilePath) throws IOException, AntennaOutOfBoundException {
-        String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
-        List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
-        List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1));
-        return new GuiSupplier(coord.get(0), coord.get(1), antennas);
+    public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
+        final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
+        final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
+        final List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1), coord.get(2));
+        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 1.5), coord.get(2), antennas);
     }
 
     public Canvas getCanvasWithDim() {
-        return new Canvas(boardWidth, boardHeight);
+        return new Canvas(translate * 2 + boardWidth, translate * 2 + boardHeight);
     }
 
-    public void drawAntennas(GraphicsContext gc) {
-        List<AntennaWithRadius> antennasWithRadius = process(antennas, boardWidth, boardHeight);
+    public void drawAntennas(final GraphicsContext gc) {
+        final List<AntennaWithRadius> antennasWithRadius = process(antennas, boardWidth, boardHeight);
         displayAntennaData(gc, antennasWithRadius);
     }
 
-    private void displayAntennaData(GraphicsContext gc, List<AntennaWithRadius> antennas) {
-        gc.setFill(Color.GRAY);
+    private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-        for (AntennaWithRadius a : antennas) {
-            gc.strokeOval(a.getX() - a.getR(), a.getY() - a.getR(), a.getR() * 2, a.getR() * 2);
+        for (final AntennaWithRadius a : antennas) {
+            gc.strokeOval(translate - maxRange + a.getX() - a.getR(), translate - maxRange + a.getY() - a.getR(),
+                          a.getR() * 2, a.getR() * 2);
 
         }
     }
 
-    //todo: extract
-    private Rectangle calcRectangle(int width, int height) {
-        List<Integer> x = Lists.newArrayList(0, width, width, 0);
-        List<Integer> y = Lists.newArrayList(height, height, 0, 0);
+    private Rectangle calcRectangle(final int width, final int height) {
+        final List<Integer> x = Lists.newArrayList(maxRange, maxRange + width, maxRange + width, maxRange);
+        final List<Integer> y = Lists.newArrayList(maxRange + height, maxRange + height, maxRange, maxRange);
         return new Rectangle(x, y);
     }
 
-    private List<AntennaWithRadius> process(List<Antenna> antennas, int width, int height) {
-        Rectangle rectangle = calcRectangle(width, height);
-        final Algorithm a = new Algorithm(antennas, rectangle, 1000, 100, 0.1, 0.2, 700);
+    private List<AntennaWithRadius> process(final List<Antenna> antennas, final int width, final int height) {
+        final Rectangle rectangle = calcRectangle(width, height);
+        final Algorithm a = new Algorithm(antennas, rectangle, 100, 200, 0.1, 0.3, maxRange);
         a.solve();
-        List<Genotype> bestGenotypes = a.getBestGenotypes();
-        int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
-        List<AntennaWithRadius> antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
-        System.out.println("ANTENNAS BEFORE: " + antennas.toString());
-        System.out.println("ANTENNAS AFTER: " + antennasWithRadius.toString());
-        System.out.println("COVERAGE:" + getCoverage(rectangle, antennasWithRadius));
+        final List<Genotype> bestGenotypes = a.getBestGenotypes();
+        final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
+        final List<AntennaWithRadius> antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
+        System.out.println();
+        System.out.println("COVERAGE: " + getCoverage(rectangle, antennasWithRadius));
         return antennasWithRadius;
-
     }
 
-    private double getCoverage(Rectangle rectangle, List<AntennaWithRadius> antennasWithRadius) {
-        PercentageAreaChecker p = new PercentageAreaChecker(rectangle, antennasWithRadius);
+    private double getCoverage(final Rectangle rectangle, final List<AntennaWithRadius> antennasWithRadius) {
+        final PercentageAreaChecker p = new PercentageAreaChecker(rectangle, antennasWithRadius);
         return p.calculateCoverage();
     }
 
+    public void drawRectangle(final GraphicsContext gc) {
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(2);
+        gc.strokeRect(translate, translate, boardWidth, boardHeight);
+    }
 }

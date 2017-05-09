@@ -19,13 +19,14 @@ public class Main extends Application {
     @Override
     public void start(final Stage primaryStage) throws Exception {
         final Group root = new Group();
-        GuiSupplier guiSupplier = GuiSupplier.create(null);
-        Canvas canvas = guiSupplier.getCanvasWithDim();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        final GuiSupplier guiSupplier = GuiSupplier.create(null);
+        final Canvas canvas = guiSupplier.getCanvasWithDim();
+        final GraphicsContext gc = canvas.getGraphicsContext2D();
         guiSupplier.drawAntennas(gc);
+        guiSupplier.drawRectangle(gc);
         root.getChildren().add(canvas);
         primaryStage.setTitle("Energy saver");
-        primaryStage.setScene(new Scene(root, guiSupplier.getBoardWidth(), guiSupplier.getBoardHeight(), Color.ALICEBLUE));
+        primaryStage.setScene(new Scene(root, Color.ALICEBLUE));
         primaryStage.setOnCloseRequest(event -> Platform.exit());
         primaryStage.show();
     }
