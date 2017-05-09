@@ -24,7 +24,6 @@ import java.util.List;
 public class JSONFileReader {
 
     private Gson instance;
-    public static final String DEFAULT_TOPOLOGY_FILE_PATH = "D:\\workspace\\repos\\energy-saver\\src\\main\\resources\\sample_topology.json";
 
     public JSONFileReader() {
         this.instance = new Gson();
@@ -65,11 +64,5 @@ public class JSONFileReader {
 
     private boolean validateAntennasCoord(List<Antenna> antennas, int xAxisRange, int yAxisRange) {
         return antennas.stream().allMatch(new AntennaValidCoordPredicate(xAxisRange, yAxisRange));
-    }
-
-    public static void main(String[] args) throws IOException, AntennaOutOfBoundException {
-        JSONFileReader reader = new JSONFileReader();
-        System.out.println(reader.getBoardCoordinates(DEFAULT_TOPOLOGY_FILE_PATH));
-        System.out.println(reader.getAntennaData(DEFAULT_TOPOLOGY_FILE_PATH, 900, 900));
     }
 }

@@ -1,7 +1,7 @@
 {
   "boardDim": {
     "x": 700,
-    "y": 500
+    "y": 700
   },
   "antennas": [
     {
@@ -17,7 +17,7 @@
     {
       "x": 334,
       "y": 473,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 250,
@@ -27,62 +27,62 @@
     {
       "x": 570,
       "y": 320,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 12,
       "y": 240,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 500,
       "y": 476,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 624,
       "y": 50,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 426,
       "y": 458,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 475,
       "y": 154,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 426,
       "y": 347,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 278,
       "y": 278,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 289,
       "y": 427,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 98,
       "y": 357,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 63,
       "y": 178,
-      "active": "False"
+      "active": "True"
     },
     {
       "x": 147,
       "y": 245,
-      "active": "False"
+      "active": "True"
     }
   ]
 }
