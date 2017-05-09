@@ -30,7 +30,7 @@ public class Genotype {
 
 	private void initialize(final int maxRange) {
 		for (int i = 0; i < ranges.length; i++) {
-			ranges[i] = ThreadLocalRandom.current().nextInt(maxRange);
+			ranges[i] = ThreadLocalRandom.current().nextInt(1, maxRange);
 		}
 	}
 

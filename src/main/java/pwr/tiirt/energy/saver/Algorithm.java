@@ -122,7 +122,22 @@ public class Algorithm {
 	private boolean notFinished(final int iterations) {
 		System.out.println("Population: " + iterations + ", current size: " + population.size());
 		final double currentMin = minimums.get(minimums.size() - 1);
-		return currentMin > 0.0 && iterations < maxIterations && !population.isEmpty();
+		return currentMin > 0.0 && iterations < maxIterations && !population.isEmpty() && resultsChanged();
+	}
+
+	private boolean resultsChanged() {
+		if (minimums.size() > 1) {
+			final double currentMin = minimums.get(minimums.size() - 1);
+			final double currentMax = maximums.get(minimums.size() - 1);
+			final double currentAvg = averages.get(minimums.size() - 1);
+			final double lastMin = minimums.get(minimums.size() - 2);
+			final double lastMax = maximums.get(minimums.size() - 2);
+			final double lastAvg = averages.get(minimums.size() - 2);
+			return Math.abs(currentMin - lastMin) > EPSILON
+			       || Math.abs(currentMax - lastMax) > EPSILON
+			       || Math.abs(currentAvg - lastAvg) > EPSILON;
+		}
+		return true;
 	}
 
 	private void mutate() {
@@ -132,7 +147,7 @@ public class Algorithm {
 	private void mutate(final Genotype g) {
 		for (int i = 0; i < g.ranges.length; i++)
 			if (mask.ranges[i] < 0.0 && ThreadLocalRandom.current().nextDouble() < mutationProbability)
-				g.ranges[i] = ThreadLocalRandom.current().nextInt(maxRange);
+				g.ranges[i] = ThreadLocalRandom.current().nextInt(1, maxRange);
 	}
 
 

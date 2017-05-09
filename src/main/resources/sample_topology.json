@@ -8,26 +8,31 @@
     {
       "x": 200,
       "y": 200,
+      "neighbours": [],
       "active": "True"
     },
     {
       "x": 180,
       "y": 155,
+      "neighbours": [],
       "active": "True"
     },
     {
       "x": 220,
       "y": 190,
+      "neighbours": [],
       "active": "True"
     },
     {
       "x": 180,
       "y": 160,
+      "neighbours": [],
       "active": "True"
     },
     {
       "x": 240,
       "y": 240,
+      "neighbours": [],
       "active": "True"
     }
   ]

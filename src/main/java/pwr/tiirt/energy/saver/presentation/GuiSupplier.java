@@ -49,11 +49,9 @@ public class GuiSupplier {
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-        for (final AntennaWithRadius a : antennas) {
-            gc.strokeOval(translate - maxRange + a.getX() - a.getR(), translate - maxRange + a.getY() - a.getR(),
-                    a.getR() * 2, a.getR() * 2);
-
-        }
+        antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
+                gc.strokeOval(translate - maxRange + a.getX() - a.getR(), translate - maxRange + a.getY() - a.getR(),
+                        a.getR() * 2, a.getR() * 2));
     }
 
     private Rectangle calcRectangle(final int width, final int height) {
@@ -66,6 +64,9 @@ public class GuiSupplier {
         final Rectangle rectangle = calcRectangle(width, height);
         final Algorithm a = new Algorithm(antennas, rectangle, 100, 200, 0.1, 0.3, maxRange);
         a.solve();
+//        antennas.get(0).active = false;
+//        final Algorithm a = new Algorithm(antennas, b.getBestGenotypes().get(b.getBestGenotypes().size() - 1), rectangle, 100, 200, 0.1, 0.3, maxRange);
+//        a.solve();
         final List<Genotype> bestGenotypes = a.getBestGenotypes();
         final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
         final List<AntennaWithRadius> antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
