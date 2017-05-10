@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 public class Algorithm {
 
-	private final static double COEFFICIENT = 1.1;
+	public final static double EFFICIENCY_COEFFICIENT = 0.91;
 
 	public static final double EPSILON = 0.000000000001;
 
@@ -93,9 +93,9 @@ public class Algorithm {
 		g.coverage = area;
 		g.score = Math.abs(area) < EPSILON ?
 				Double.POSITIVE_INFINITY
-				: antennas.stream()
+				: (antennas.stream()
 				          .filter(AntennaWithRadius::isActive)
-				          .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() * COEFFICIENT / Math.min(Math.pow(area, 4), 1.0);
+				          .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() / EFFICIENCY_COEFFICIENT) / Math.min(Math.pow(area, 4), 1.0);
 	}
 
 	private Comparator<Genotype> scoreComparator() {return (g1, g2) -> (int) Math.signum(g1.score - g2.score);}

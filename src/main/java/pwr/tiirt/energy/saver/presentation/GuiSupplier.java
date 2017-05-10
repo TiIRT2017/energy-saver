@@ -1,7 +1,6 @@
 package pwr.tiirt.energy.saver.presentation;
 
 import com.google.common.collect.Lists;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import lombok.AllArgsConstructor;
@@ -29,29 +28,27 @@ public class GuiSupplier {
     private int translate;
     private int maxRange;
     private List<Antenna> antennas;
-
+    private double coverage;
+    
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
         final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
         final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
         final List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1), coord.get(2));
-        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 1.5), coord.get(2), antennas);
+        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 1.5), coord.get(2), antennas, 0.0);
     }
 
-    public Canvas getCanvasWithDim() {
-        return new Canvas(translate * 2 + boardWidth, translate * 2 + boardHeight);
-    }
-
-    public void drawAntennas(final GraphicsContext gc) {
-        final List<AntennaWithRadius> antennasWithRadius = process(antennas, boardWidth, boardHeight);
-        displayAntennaData(gc, antennasWithRadius);
+    public List<AntennaWithRadius> drawAntennas(final GraphicsContext gc) {
+        final List<AntennaWithRadius> antennas = process(this.antennas, boardWidth, boardHeight);
+        displayAntennaData(gc, antennas);
+        return antennas;
     }
 
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
         antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
-            gc.strokeOval(translate - maxRange + a.getX() - a.getR(), translate - maxRange + a.getY() - a.getR(),
-                          a.getR() * 2, a.getR() * 2));
+                gc.strokeOval(translate - maxRange + a.getX() - a.getR(), translate - maxRange + a.getY() - a.getR(),
+                        a.getR() * 2, a.getR() * 2));
     }
 
     private Rectangle calcRectangle(final int width, final int height) {
@@ -63,7 +60,7 @@ public class GuiSupplier {
     private List<AntennaWithRadius> process(final List<Antenna> antennas, final int width, final int height) {
         final Rectangle rectangle = calcRectangle(width, height);
         List<AntennaWithRadius> antennasWithRadius = Collections.emptyList();
-        double coverage = Double.NEGATIVE_INFINITY;
+        coverage = Double.NEGATIVE_INFINITY;
         while (coverage < 0) {
             final Algorithm a = new Algorithm(antennas, rectangle, 100, 20, 0.1, 0.3, maxRange);
             a.solve();
@@ -72,7 +69,6 @@ public class GuiSupplier {
             antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
             coverage = getCoverage(rectangle, antennasWithRadius);
         }
-        System.out.println("COVERAGE: " + coverage);
         return antennasWithRadius;
     }
 
