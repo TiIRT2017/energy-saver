@@ -120,7 +120,6 @@ public class Algorithm {
 	}
 
 	private boolean notFinished(final int iterations) {
-		System.out.println("Population: " + iterations + ", current size: " + population.size());
 		final double currentMin = minimums.get(minimums.size() - 1);
 		return currentMin > 0.0 && iterations < maxIterations && !population.isEmpty() && resultsChanged();
 	}

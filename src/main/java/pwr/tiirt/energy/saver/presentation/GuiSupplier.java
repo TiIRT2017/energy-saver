@@ -16,6 +16,7 @@ import pwr.tiirt.energy.saver.parser.JSONFileReader;
 import pwr.tiirt.energy.saver.resolver.PercentageAreaChecker;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,16 +62,17 @@ public class GuiSupplier {
 
     private List<AntennaWithRadius> process(final List<Antenna> antennas, final int width, final int height) {
         final Rectangle rectangle = calcRectangle(width, height);
-        final Algorithm a = new Algorithm(antennas, rectangle, 100, 200, 0.1, 0.3, maxRange);
-        a.solve();
-//        antennas.get(0).active = false;
-//        final Algorithm a = new Algorithm(antennas, b.getBestGenotypes().get(b.getBestGenotypes().size() - 1), rectangle, 100, 200, 0.1, 0.3, maxRange);
-//        a.solve();
-        final List<Genotype> bestGenotypes = a.getBestGenotypes();
-        final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
-        final List<AntennaWithRadius> antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
-        System.out.println();
-        System.out.println("COVERAGE: " + getCoverage(rectangle, antennasWithRadius));
+        List<AntennaWithRadius> antennasWithRadius = Collections.emptyList();
+        double coverage = Double.NEGATIVE_INFINITY;
+        while (coverage < 0) {
+            final Algorithm a = new Algorithm(antennas, rectangle, 100, 20, 0.1, 0.3, maxRange);
+            a.solve();
+            final List<Genotype> bestGenotypes = a.getBestGenotypes();
+            final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
+            antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
+            coverage = getCoverage(rectangle, antennasWithRadius);
+        }
+        System.out.println("COVERAGE: " + coverage);
         return antennasWithRadius;
     }
 
