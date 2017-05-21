@@ -24,8 +24,8 @@ public class AlgorithmTest {
 
 	@Test
 	public void solve() throws Exception {
-		final Antenna antenna1 = new Antenna(4, 5, Lists.emptyList(), true);
-		final Antenna antenna2 = new Antenna(6, 5, Lists.emptyList(), true);
+		final Antenna antenna1 = new Antenna(1,4, 5, Lists.emptyList(), true);
+		final Antenna antenna2 = new Antenna(2,6, 5, Lists.emptyList(), true);
 		final ArrayList<Antenna> antennas = Lists.newArrayList(antenna1, antenna2);
 		final Algorithm a = new Algorithm(antennas, rectangle, 10, 50, 0.1, 0.2, 6);
 		a.solve();

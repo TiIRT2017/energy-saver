@@ -29,7 +29,7 @@ public class GuiSupplier {
     private int maxRange;
     private List<Antenna> antennas;
     private double coverage;
-    
+
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
         final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
         final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
