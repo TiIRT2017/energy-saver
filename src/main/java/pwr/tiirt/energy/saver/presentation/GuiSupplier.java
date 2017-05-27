@@ -14,7 +14,12 @@ import pwr.tiirt.energy.saver.model.Rectangle;
 import pwr.tiirt.energy.saver.parser.JSONFileReader;
 import pwr.tiirt.energy.saver.resolver.PercentageAreaChecker;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -61,15 +66,35 @@ public class GuiSupplier {
         final Rectangle rectangle = calcRectangle(width, height);
         List<AntennaWithRadius> antennasWithRadius = Collections.emptyList();
         coverage = Double.NEGATIVE_INFINITY;
+        Algorithm a = null;
         while (coverage < 0) {
-            final Algorithm a = new Algorithm(antennas, rectangle, 100, 20, 0.1, 0.3, maxRange);
+            a = new Algorithm(antennas, rectangle, 100, 20, 0.1, 0.3, maxRange);
             a.solve();
             final List<Genotype> bestGenotypes = a.getBestGenotypes();
             final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
             antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
             coverage = getCoverage(rectangle, antennasWithRadius);
         }
+        saveResults(a);
         return antennasWithRadius;
+    }
+
+    private void saveResults(final Algorithm algorithm) {
+        try (final BufferedWriter bw = new BufferedWriter(
+                new FileWriter("run_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")) + ".csv"))){
+            bw.write("Pokolenie;Najlepszy;Średnia;Najgorszy");
+            bw.newLine();
+            final List<Double> mins = algorithm.getMinimums();
+            final List<Double> maxs = algorithm.getMaximums();
+            final List<Double> avgs = algorithm.getAverages();
+
+            for (int i = 1; i < mins.size(); i++) {
+                bw.write(String.format("%d;%f;%f;%f", i, mins.get(i), avgs.get(i), maxs.get(i)));
+                bw.newLine();
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private double getCoverage(final Rectangle rectangle, final List<AntennaWithRadius> antennasWithRadius) {
