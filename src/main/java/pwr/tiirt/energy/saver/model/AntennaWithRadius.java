@@ -35,6 +35,10 @@ public class AntennaWithRadius {
     }
 
 
+    public void movePointBy(int maxRange){
+        this.x +=maxRange;
+        this.y +=maxRange;
+    }
     public int getSmallestX() {
         return getX() - getR();
     }
@@ -74,5 +78,9 @@ public class AntennaWithRadius {
     public static List<Antenna> antennaWithRadiusToAntenna(List<AntennaWithRadius> antennasWithRadius) {
         List<Antenna> antennas = antennasWithRadius.stream().map(a -> new Antenna(a.id, a.x, a.y, Lists.newArrayList(), a.isActive)).collect(Collectors.toList());
         return Antenna.setAdjacencies(antennas, antennasWithRadius);
+    }
+
+    public String getShortRepr(int maxRange){
+        return "(x,y)=("+(x-maxRange)+","+(y-maxRange)+"), r= "+r;
     }
 }
