@@ -1,44 +1,38 @@
 {
   "boardData": {
-    "x": 100,
-    "y": 100,
-    "maxRange": 150
+    "x": 500,
+    "y": 500,
+    "maxRange": 100
   },
   "antennas": [
     {
       "id": 1,
-      "x": 200,
-      "y": 200,
+      "x": 100,
+      "y": 100,
       "isActive": "True",
-      "neighborIds": [2,5]
+      "neighborIds": []
     },
     {
       "id": 2,
-      "x": 160,
-      "y": 155,
+      "x": 350,
+      "y": 150,
       "isActive": "True",
-      "neighborIds": [1]
+      "neighborIds": []
     },
     {
       "id": 3,
-      "x": 220,
-      "y": 190,
+      "x": 150,
+      "y": 350,
       "isActive": "True",
-      "neighborIds": [4]
+      "neighborIds": []
     },
     {
       "id": 4,
-      "x": 180,
-      "y": 160,
+      "x": 400,
+      "y": 400,
       "isActive": "True",
-      "neighborIds": [3]
-    },
-    {
-      "id": 5,
-      "x": 240,
-      "y": 240,
-      "isActive": "True",
-      "neighborIds": [1]
+      "neighborIds": []
     }
+
   ]
 }

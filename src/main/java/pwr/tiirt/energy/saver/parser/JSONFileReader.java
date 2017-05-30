@@ -39,11 +39,12 @@ public class JSONFileReader {
         final JsonObject topologyData = readDataFromJson(topologyDataFilepath);
         final JsonArray antennaArray = topologyData.getAsJsonArray(ANTENNAS_JSON_KEY);
         final List<AntennaWithRadius> antennasWithRadius = parseAntennaData(antennaArray);
-        if (validateAntennasCoord(antennasWithRadius, xRange, yRange, maxRange)) {
-            return AntennaWithRadius.antennaWithRadiusToAntenna(antennasWithRadius);
-        } else {
-            throw new AntennaOutOfBoundException(antennasWithRadius.toString());
-        }
+        return AntennaWithRadius.antennaWithRadiusToAntenna(antennasWithRadius);
+//        if (validateAntennasCoord(antennasWithRadius, xRange, yRange, maxRange)) {
+//            return AntennaWithRadius.antennaWithRadiusToAntenna(antennasWithRadius);
+//        } else {
+//            throw new AntennaOutOfBoundException(antennasWithRadius.toString());
+//        }
     }
 
     public List<Integer> getBoardCoordinates(final String boardCoordFilePath) throws IOException {

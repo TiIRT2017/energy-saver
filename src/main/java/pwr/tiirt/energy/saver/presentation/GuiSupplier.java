@@ -17,7 +17,6 @@ import pwr.tiirt.energy.saver.resolver.PercentageAreaChecker;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -51,8 +50,9 @@ public class GuiSupplier {
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
+        antennas.stream().forEach(a -> gc.strokeOval(translate + a.getX()-0.5,  translate + a.getY()-0.5, 1,1));
         antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
-                gc.strokeOval(translate - maxRange + a.getX() - a.getR(), translate - maxRange + a.getY() - a.getR(),
+                gc.strokeOval(translate + a.getX() - a.getR(), translate + a.getY() - a.getR(),
                         a.getR() * 2, a.getR() * 2));
     }
 
@@ -81,7 +81,7 @@ public class GuiSupplier {
 
     private void saveResults(final Algorithm algorithm) {
         try (final BufferedWriter bw = new BufferedWriter(
-                new FileWriter("run_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")) + ".csv"))){
+                new FileWriter("run_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")) + ".csv"))) {
             bw.write("Pokolenie;Najlepszy;Średnia;Najgorszy");
             bw.newLine();
             final List<Double> mins = algorithm.getMinimums();
