@@ -50,13 +50,9 @@ public class GuiSupplier {
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-        gc.strokeOval(0,0,10,10);
-        gc.strokeOval(0,500,10,10);
-        gc.strokeOval(500,500,10,10);
-        gc.strokeOval(500,0,10,10);
-        antennas.stream().forEach(a -> gc.strokeOval(translate -maxRange+ a.getX()-0.5,  translate -maxRange+ a.getY()-0.5, 1,1));
+        antennas.stream().forEach(a -> gc.strokeOval(translate+ a.getX()-0.5,  translate +a.getY()-0.5, 1,1));
         antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
-                gc.strokeOval(translate -maxRange+ a.getX() - a.getR(), translate -maxRange+ a.getY() - a.getR(),
+                gc.strokeOval(translate+ a.getX() - a.getR(), translate+ a.getY() - a.getR(),
                         a.getR() * 2, a.getR() * 2));
     }
 
