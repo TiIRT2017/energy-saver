@@ -38,7 +38,7 @@ public class GuiSupplier {
         final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology2.json").getFile() : dataFilePath;
         final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
         final List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1), coord.get(2));
-        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 1.5), coord.get(2), antennas, 0.0);
+        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 0.5), coord.get(2), antennas, 0.0);
     }
 
     public List<AntennaWithRadius> drawAntennas(final GraphicsContext gc) {
@@ -50,19 +50,15 @@ public class GuiSupplier {
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-        gc.strokeOval(0,0,10,10);
-        gc.strokeOval(0,500,10,10);
-        gc.strokeOval(500,500,10,10);
-        gc.strokeOval(500,0,10,10);
-        antennas.stream().forEach(a -> gc.strokeOval(translate -maxRange+ a.getX()-0.5,  translate -maxRange+ a.getY()-0.5, 1,1));
+        antennas.stream().forEach(a -> gc.strokeOval(translate + a.getX()-0.5,  translate + a.getY()-0.5, 1,1));
         antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
-                gc.strokeOval(translate -maxRange+ a.getX() - a.getR(), translate -maxRange+ a.getY() - a.getR(),
+                gc.strokeOval(translate + a.getX() - a.getR(), translate + a.getY() - a.getR(),
                         a.getR() * 2, a.getR() * 2));
     }
 
     private Rectangle calcRectangle(final int width, final int height) {
-        final List<Integer> x = Lists.newArrayList(maxRange, maxRange + width, maxRange + width, maxRange);
-        final List<Integer> y = Lists.newArrayList(maxRange + height, maxRange + height, maxRange, maxRange);
+        final List<Integer> x = Lists.newArrayList(0, width,  width, 0);
+        final List<Integer> y = Lists.newArrayList(height, height, 0, 0);
         return new Rectangle(x, y);
     }
 
