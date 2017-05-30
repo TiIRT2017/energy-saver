@@ -35,7 +35,7 @@ public class GuiSupplier {
     private double coverage;
 
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
-        final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
+        final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology2.json").getFile() : dataFilePath;
         final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
         final List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1), coord.get(2));
         return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 1.5), coord.get(2), antennas, 0.0);
@@ -50,9 +50,9 @@ public class GuiSupplier {
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-        antennas.stream().forEach(a -> gc.strokeOval(translate + a.getX()-0.5,  translate + a.getY()-0.5, 1,1));
+        antennas.stream().forEach(a -> gc.strokeOval(translate+ a.getX()-0.5,  translate +a.getY()-0.5, 1,1));
         antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
-                gc.strokeOval(translate + a.getX() - a.getR(), translate + a.getY() - a.getR(),
+                gc.strokeOval(translate+ a.getX() - a.getR(), translate+ a.getY() - a.getR(),
                         a.getR() * 2, a.getR() * 2));
     }
 
@@ -68,14 +68,15 @@ public class GuiSupplier {
         coverage = Double.NEGATIVE_INFINITY;
         Algorithm a = null;
         while (coverage < 0) {
-            a = new Algorithm(antennas, rectangle, 100, 20, 0.1, 0.3, maxRange);
+            a = new Algorithm(antennas, rectangle, 100, 500, 0.1, 0.3, maxRange);
             a.solve();
             final List<Genotype> bestGenotypes = a.getBestGenotypes();
             final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
             antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
             coverage = getCoverage(rectangle, antennasWithRadius);
         }
-        saveResults(a);
+//        saveResults(a);
+        System.out.println("DONE!");
         return antennasWithRadius;
     }
 
