@@ -1,5 +1,6 @@
 package pwr.tiirt.energy.saver;
 
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import pwr.tiirt.energy.saver.model.AntennaWithRadius;
 import pwr.tiirt.energy.saver.model.Rectangle;
 import pwr.tiirt.energy.saver.resolver.PercentageAreaChecker;
@@ -97,6 +98,38 @@ public class Algorithm {
 				          .filter(AntennaWithRadius::isActive)
 				          .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() / EFFICIENCY_COEFFICIENT) / Math.min(Math.pow(area, 4), 1.0);
 	}
+
+    private void calculateFunctionWithStandardDeviation(final Genotype g) {
+        final List<AntennaWithRadius> antennas = this.antennas
+                .stream()
+                .map(a -> new AntennaWithRadius(a.x, a.y, g.ranges[this.antennas.indexOf(a)], a.active))
+                .collect(Collectors.toList());
+        final double area = new PercentageAreaChecker(rectangle, antennas).calculateCoverage();
+        StandardDeviation std = new StandardDeviation();
+        List<Integer> rs = antennas.stream().map(AntennaWithRadius::getR).collect(Collectors.toList());
+        double[] rsArray = rs.stream().mapToDouble(r -> r).toArray();
+        double stdDev = std.evaluate(rsArray);
+        g.coverage = area;
+        g.score = Math.abs(area) < EPSILON ?
+                Double.POSITIVE_INFINITY
+                : ((antennas.stream()
+                .filter(AntennaWithRadius::isActive)
+                .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() + (1000/stdDev) / EFFICIENCY_COEFFICIENT)) / Math.min(Math.pow(area, 4), 1.0);
+    }
+
+    private void calculateFunctionRadiusMoreImportant(final Genotype g) {
+        final List<AntennaWithRadius> antennas = this.antennas
+                .stream()
+                .map(a -> new AntennaWithRadius(a.x, a.y, g.ranges[this.antennas.indexOf(a)], a.active))
+                .collect(Collectors.toList());
+        final double area = new PercentageAreaChecker(rectangle, antennas).calculateCoverage();
+        g.coverage = area;
+        g.score = Math.abs(area) < EPSILON ?
+                Double.POSITIVE_INFINITY
+                : (antennas.stream()
+                .filter(AntennaWithRadius::isActive)
+                .mapToDouble(a -> Math.pow(a.getR(), 4)).sum() / EFFICIENCY_COEFFICIENT) / Math.min(Math.pow(area, 4), 1.0);
+    }
 
 	private Comparator<Genotype> scoreComparator() {return (g1, g2) -> (int) Math.signum(g1.score - g2.score);}
 
