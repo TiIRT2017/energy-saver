@@ -34,12 +34,13 @@ public class GuiSupplier {
     private List<Antenna> antennas;
     private double coverage;
     public static final int OFFSET = 150;
+    private Genotype best = null;
 
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
         final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
         final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
         final List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1), coord.get(2));
-        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 0.5), coord.get(2), antennas, 0.0);
+        return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 0.5), coord.get(2), antennas, 0.0,null);
     }
 
     public List<AntennaWithRadius> drawAntennas(final GraphicsContext gc) {
@@ -68,13 +69,20 @@ public class GuiSupplier {
         List<AntennaWithRadius> antennasWithRadius = Collections.emptyList();
         coverage = Double.NEGATIVE_INFINITY;
         Algorithm a = null;
-        while (coverage < 0) {
-            a = new Algorithm(antennas, rectangle, 100, 500, 0.1, 0.3, maxRange);
+        while (coverage < 0.0) {
+            if (best == null) {
+                a = new Algorithm(antennas, rectangle, 100, 500, 0.1, 0.3, maxRange);
+            } else {
+                antennas.get(1).active = false;
+                a = new Algorithm(antennas, best, rectangle, 100, 500, 0.1, 0.3, maxRange);
+            }
             a.solve();
             final List<Genotype> bestGenotypes = a.getBestGenotypes();
             final int[] bestRanges = bestGenotypes.get(bestGenotypes.size() - 1).ranges;
             antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
             coverage = getCoverage(rectangle, antennasWithRadius);
+            if (coverage > 0.0 && best == null)
+                best = bestGenotypes.get(bestGenotypes.size() - 1);
         }
         saveResults(a);
         System.out.println("DONE!");

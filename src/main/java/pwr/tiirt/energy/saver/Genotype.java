@@ -40,13 +40,13 @@ public class Genotype {
 		}
 	}
 
-	public void initializeMask(final Genotype mask, final List<Antenna> antennas) {
+	public void initializeMask(final Genotype best, final List<Antenna> antennas) {
 		final List<Integer> indices = antennas.stream()
 		                                      .filter(a -> !a.active)
 		                                      .flatMap(a -> a.neighbours.stream())
 		                                      .mapToInt(a -> antennas.indexOf(a)).boxed().collect(Collectors.toList());
 		for (int i = 0; i < ranges.length; i++) {
-			ranges[i] = indices.contains(i) ? -1 : mask.ranges[i];
+			ranges[i] = indices.contains(i) ? -1 : best.ranges[i];
 		}
 	}
 

@@ -7,6 +7,7 @@ import pwr.tiirt.energy.saver.model.AntennaWithRadius;
 import pwr.tiirt.energy.saver.model.Rectangle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -85,6 +86,26 @@ public class PercentageAreaCheckerTest {
         PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
         // when
         double area = percentageAreaChecker.calculateCoverage();
+        // then
+        assertThat(area).isCloseTo(0.05, Percentage.withPercentage(5));
+    }
+
+    @Test
+    public void shouldCalculateCoverageWithSwitchedOffAntennas() {
+        // given
+        AntennaWithRadius antenna1 = new AntennaWithRadius(450, 750, 5, true);
+        AntennaWithRadius antenna2 = new AntennaWithRadius(600, 600, 271, false);
+        AntennaWithRadius antenna3 = new AntennaWithRadius(750, 450, 1, true);
+        ArrayList<AntennaWithRadius> antennas = Lists.newArrayList(antenna1, antenna2, antenna3);
+        int maxRange = 400;
+        int height = 400;
+        int width = 400;
+        final List<Integer> x = com.google.common.collect.Lists.newArrayList(maxRange, width + maxRange, maxRange + width, maxRange);
+        final List<Integer> y = com.google.common.collect.Lists.newArrayList(height + maxRange, height + maxRange, maxRange, maxRange);
+        PercentageAreaChecker percentageAreaChecker = new PercentageAreaChecker(new Rectangle(x, y), antennas);
+        // when
+        double area = percentageAreaChecker.calculateCoverage();
+        System.out.println(area);
         // then
         assertThat(area).isCloseTo(0.05, Percentage.withPercentage(5));
     }

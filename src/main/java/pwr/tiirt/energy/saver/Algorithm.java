@@ -49,7 +49,7 @@ public class Algorithm {
 		initialize();
 	}
 
-	public Algorithm(final List<Antenna> antennas, final Genotype mask, final Rectangle rectangle, final int populationSize, final int maxIterations, final double mutationProbability,
+	public Algorithm(final List<Antenna> antennas, final Genotype best, final Rectangle rectangle, final int populationSize, final int maxIterations, final double mutationProbability,
 	                 final double crossoverProbability, final int maxRange) {
 		this.antennas = Collections.unmodifiableList(antennas);
 		this.rectangle = rectangle;
@@ -60,7 +60,7 @@ public class Algorithm {
 		this.crossoverProbability = crossoverProbability;
 		this.mask = new Genotype(antennas.size());
 		this.maxRange = maxRange;
-		initialize(mask);
+		initialize(best);
 	}
 
 	private void initialize() {
@@ -72,10 +72,10 @@ public class Algorithm {
 		saveResults();
 	}
 
-	private void initialize(final Genotype mask) {
-		this.mask.initializeMask(mask, antennas);
+	private void initialize(final Genotype best) {
+		this.mask.initializeMask(best, antennas);
 		for (int i = 0; i < populationSize; i++) {
-			population.add(new Genotype(this.mask));
+			population.add(new Genotype(best));
 		}
 		evaluate();
 		saveResults();
