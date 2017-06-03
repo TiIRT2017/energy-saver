@@ -33,7 +33,7 @@ public class GuiSupplier {
     private int maxRange;
     private List<Antenna> antennas;
     private double coverage;
-    public static final int OFFSET = 100;
+    public static final int OFFSET = 150;
 
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
         final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
@@ -76,7 +76,7 @@ public class GuiSupplier {
             antennasWithRadius = AntennaWithRadius.antennaToAntennaWithRadius(antennas, bestRanges);
             coverage = getCoverage(rectangle, antennasWithRadius);
         }
-//        saveResults(a);
+        saveResults(a);
         System.out.println("DONE!");
         return antennasWithRadius;
     }

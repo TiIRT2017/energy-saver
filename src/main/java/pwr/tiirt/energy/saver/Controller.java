@@ -122,8 +122,9 @@ public class Controller implements Initializable {
         energyUsageLabel.setVisible(true);
         energyUsageHolder.setText((String.format("%.2f", score)));
         String formattedString = antennas.stream().map(a -> a.getShortRepr(guiSupplier.getMaxRange())).reduce("", (ante1, ante2) -> ante1 + "\n" + ante2);
+
         antennaRanges.setWrapText(true);
-        antennaRanges.setText(formattedString);
+        antennaRanges.setText(formattedString+"\n");
         maxRangeHolder.setText(String.valueOf(guiSupplier.getMaxRange()));
     }
 }

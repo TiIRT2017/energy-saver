@@ -20,6 +20,7 @@ public class Main extends Application {
         primaryStage.setTitle("Energy saver");
         primaryStage.setScene(new Scene(root, Color.ALICEBLUE));
         primaryStage.setOnCloseRequest(event -> Platform.exit());
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 }
