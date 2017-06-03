@@ -35,7 +35,7 @@ public class GuiSupplier {
     private double coverage;
 
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
-        final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology2.json").getFile() : dataFilePath;
+        final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
         final List<Integer> coord = new JSONFileReader().getBoardCoordinates(filePath);
         final List<Antenna> antennas = new JSONFileReader().getAntennaData(filePath, coord.get(0), coord.get(1), coord.get(2));
         return new GuiSupplier(coord.get(0), coord.get(1), (int) (coord.get(2) * 0.5), coord.get(2), antennas, 0.0);
@@ -50,15 +50,15 @@ public class GuiSupplier {
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-        antennas.stream().forEach(a -> gc.strokeOval(translate + a.getX()-0.5,  translate + a.getY()-0.5, 1,1));
+        antennas.stream().forEach(a -> gc.strokeOval(a.getX()-maxRange - 0.5, a.getY()-maxRange - 0.5, 1, 1));
         antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
-                gc.strokeOval(translate + a.getX() - a.getR(), translate + a.getY() - a.getR(),
+                gc.strokeOval(a.getX()-maxRange - a.getR(), a.getY()-maxRange - a.getR(),
                         a.getR() * 2, a.getR() * 2));
     }
 
     private Rectangle calcRectangle(final int width, final int height) {
-        final List<Integer> x = Lists.newArrayList(0, width,  width, 0);
-        final List<Integer> y = Lists.newArrayList(height, height, 0, 0);
+        final List<Integer> x = Lists.newArrayList(maxRange, width + maxRange, maxRange + width, maxRange);
+        final List<Integer> y = Lists.newArrayList(height + maxRange, height + maxRange, maxRange, maxRange);
         return new Rectangle(x, y);
     }
 
@@ -106,6 +106,6 @@ public class GuiSupplier {
     public void drawRectangle(final GraphicsContext gc) {
         gc.setStroke(Color.RED);
         gc.setLineWidth(2);
-        gc.strokeRect(translate, translate, boardWidth, boardHeight);
+        gc.strokeRect(0, 0, boardWidth, boardHeight);
     }
 }
