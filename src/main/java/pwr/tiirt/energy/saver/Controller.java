@@ -7,8 +7,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import pwr.tiirt.energy.saver.model.AntennaOutOfBoundException;
 import pwr.tiirt.energy.saver.model.AntennaWithRadius;
@@ -55,7 +53,16 @@ public class Controller implements Initializable {
     private Label maxRangeHolder;
 
     @FXML
-    private TextField antennaRanges;
+    private Label recLabel;
+
+    @FXML
+    private Label recHeightHolder;
+
+//    @FXML
+//    private Label recWidthHolder;
+
+    @FXML
+    private Label antennaRanges;
 
     @FXML
     private Canvas canvas;
@@ -89,6 +96,7 @@ public class Controller implements Initializable {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         final List<AntennaWithRadius> antennas = guiSupplier.drawAntennas(gc);
         guiSupplier.drawRectangle(gc);
+        recHeightHolder.setText(String.valueOf("("+guiSupplier.getBoardWidth()+","+guiSupplier.getBoardHeight()+")"));
         fillTextFields(antennas);
     }
 
@@ -99,18 +107,23 @@ public class Controller implements Initializable {
         energyUsageHolder.setVisible(true);
         maxRangeHolder.setVisible(true);
         maxRangeLabel.setVisible(true);
+        antennaRanges.setVisible(true);
+        recLabel.setVisible(true);
     }
 
     private void fillTextFields(final List<AntennaWithRadius> antennas) {
         final double coverage = guiSupplier.getCoverage();
         coverageLabel.setVisible(true);
-        coverageHolder.setText((String.valueOf(coverage * 100)).substring(0, 5));
+        coverageHolder.setText(String.valueOf(coverage * 100));
+//        coverageHolder.setText((String.valueOf(coverage * 100)).substring(0, 5));
         final double score = antennas.stream()
                 .filter(AntennaWithRadius::isActive)
                 .mapToDouble(a -> Math.pow(a.getR(), 2)).sum() / Algorithm.EFFICIENCY_COEFFICIENT;
         energyUsageLabel.setVisible(true);
         energyUsageHolder.setText((String.format("%.2f", score)));
         String formattedString = antennas.stream().map(a -> a.getShortRepr(guiSupplier.getMaxRange())).reduce("", (ante1, ante2) -> ante1 + "\n" + ante2);
+        antennaRanges.setWrapText(true);
+        antennaRanges.setText(formattedString);
         maxRangeHolder.setText(String.valueOf(guiSupplier.getMaxRange()));
     }
 }

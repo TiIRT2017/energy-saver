@@ -33,6 +33,7 @@ public class GuiSupplier {
     private int maxRange;
     private List<Antenna> antennas;
     private double coverage;
+    public static final int OFFSET = 100;
 
     public static GuiSupplier create(final String dataFilePath) throws IOException, AntennaOutOfBoundException {
         final String filePath = Objects.isNull(dataFilePath) ? GuiSupplier.class.getResource("/sample_topology.json").getFile() : dataFilePath;
@@ -50,9 +51,9 @@ public class GuiSupplier {
     private void displayAntennaData(final GraphicsContext gc, final List<AntennaWithRadius> antennas) {
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-        antennas.stream().forEach(a -> gc.strokeOval(a.getX()-maxRange - 0.5, a.getY()-maxRange - 0.5, 1, 1));
+        antennas.stream().forEach(a -> gc.strokeOval(a.getX()-maxRange+OFFSET - 0.5, a.getY()-maxRange+OFFSET - 0.5, 1, 1));
         antennas.stream().filter(AntennaWithRadius::isActive).forEach(a ->
-                gc.strokeOval(a.getX()-maxRange - a.getR(), a.getY()-maxRange - a.getR(),
+                gc.strokeOval(a.getX()-maxRange +OFFSET- a.getR(), a.getY()-maxRange+OFFSET - a.getR(),
                         a.getR() * 2, a.getR() * 2));
     }
 
@@ -106,6 +107,6 @@ public class GuiSupplier {
     public void drawRectangle(final GraphicsContext gc) {
         gc.setStroke(Color.RED);
         gc.setLineWidth(2);
-        gc.strokeRect(0, 0, boardWidth, boardHeight);
+        gc.strokeRect(OFFSET, OFFSET, boardWidth, boardHeight);
     }
 }

@@ -40,6 +40,12 @@
                 <Label fx:id="maxRangeHolder" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
                 <Label fx:id="maxRangeLabel" alignment="CENTER" contentDisplay="CENTER" text="Max range:"
                        visible="false" GridPane.rowIndex="5"/>
+                <Label fx:id="recLabel" alignment="CENTER" contentDisplay="CENTER" text="Board (x,y)="
+                       visible="false" GridPane.rowIndex="6"/>
+                <Label fx:id="recHeightHolder" GridPane.columnIndex="1" contentDisplay="CENTER" text=""
+                       visible="true" GridPane.rowIndex="6"/>
+                <Label fx:id="antennaRanges" alignment="CENTER" contentDisplay="CENTER" text=""
+                       visible="false" GridPane.rowIndex="7"/>
             </children>
         </GridPane>
     </right>

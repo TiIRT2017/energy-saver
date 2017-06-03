@@ -1,0 +1,38 @@
+{
+  "boardData": {
+    "x": 400,
+    "y": 400,
+    "maxRange": 100
+  },
+  "antennas": [
+    {
+      "id": 1,
+      "x": 100,
+      "y": 100,
+      "isActive": "True",
+      "neighborIds": []
+    },
+    {
+      "id": 2,
+      "x": 300,
+      "y": 100,
+      "isActive": "True",
+      "neighborIds": []
+    },
+    {
+      "id": 3,
+      "x": 100,
+      "y": 300,
+      "isActive": "True",
+      "neighborIds": []
+    },
+    {
+      "id": 4,
+      "x": 300,
+      "y": 300,
+      "isActive": "True",
+      "neighborIds": []
+    }
+
+  ]
+}
