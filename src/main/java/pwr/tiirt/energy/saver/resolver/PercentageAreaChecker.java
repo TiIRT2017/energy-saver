@@ -1,11 +1,14 @@
 package pwr.tiirt.energy.saver.resolver;
 
 import lombok.*;
+import pwr.tiirt.energy.saver.Antenna;
 import pwr.tiirt.energy.saver.model.AntennaWithRadius;
 import pwr.tiirt.energy.saver.model.Point;
 import pwr.tiirt.energy.saver.model.Rectangle;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +25,31 @@ public class PercentageAreaChecker {
     private Rectangle rectangle;
     private List<AntennaWithRadius> allAntennas;
 
-    public double calculateCoverage() {
+
+    public double calculateCoverage(){
+        int minX = rectangle.getX().stream().mapToInt(e -> e).min().getAsInt();
+        int minY = rectangle.getY().stream().mapToInt(e -> e).min().getAsInt();
+        int maxX = rectangle.getX().stream().mapToInt(e -> e).max().getAsInt();
+        int maxY = rectangle.getY().stream().mapToInt(e -> e).max().getAsInt();
+        int width = maxX - minX;
+        int height = maxY - minY;
+        final List<AntennaWithRadius> antennas = allAntennas.stream().filter(AntennaWithRadius::isActive).collect(Collectors.toList());
+        int c = 0;
+        for(int i=minX; i<maxX; i++){
+            for(int j = minY; j<maxY; j++){
+                int finalI = i;
+                int finalJ = j;
+                if(antennas.parallelStream().filter(a -> isUnitCovered(a, finalI,finalJ)).findAny().isPresent()) {
+                    c++;
+                }
+            }
+        }
+        return c/(width*height*1.0);
+    }
+     private boolean isUnitCovered(AntennaWithRadius a, int i, int j){
+        return Math.sqrt(Math.pow(a.getX() - i, 2)+ Math.pow(a.getY()-j,2)) < a.getR();
+     }
+    public double calculateCoverage2() {
         final List<AntennaWithRadius> antennas = allAntennas.stream().filter(AntennaWithRadius::isActive).collect(Collectors.toList());
         final PolygonResolver polygonResolver = new PolygonResolver(antennas);
         final List<Double> xCoordinates = polygonResolver.getXCoordinates();
